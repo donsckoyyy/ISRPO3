@@ -1,71 +1,78 @@
-# smart-breaker README
+# Smart Breaker
+**Lab work #3** for the course *Software Development Tools* (ITMO University). This repository contains Smart Breaker, a VS Code extension written in TypeScript.
 
-This is the README for your extension "smart-breaker". After writing up a brief description, we recommend including the following sections.
+Smart Breaker keeps track of how long you have been coding non-stop and makes you take breaks. Ignore the reminder, and it gets more and more persistent until it takes over the whole editor.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Activity-based work tracking.** Only the time you spend typing in the editor counts as work. If the window is minimized or you are just reading, the timer does not run.
+- **Automatic break detection.** Stop typing for 5 minutes and a break begins. If it lasts 30 minutes, the break counts and your work time is reset.
+- **Reminder with a random tip:** stretch your neck, drink some water, do eye exercises, etc.
+- **Escalation.** Every 5 minutes of ignoring it, the reminder gets more intrusive: a notification in the corner, a warning and a yellow status bar, an error message and a red status bar, a full-editor "Time for a break" panel. Close it with the ✕ and it comes right back.
+- **Reminders disappear on their own** once the break counts. There is no "Snooze" button: the only way to get rid of the reminder is to actually rest.
+- **No early-return cheating.** Come back to the code before 30 minutes are up and the break does not count: the reminder drops back to level 1 and the rest countdown starts over.
+- **Survives restarts.** Accumulated work time and the reminder level are saved, so restarting VS Code will not reset the timer. If the editor was closed for longer than a break, the break counts.
+- **Status bar:** time left until the break, rest time remaining, and a color that matches the reminder level. Hover for stats, click to show them in a notification.
+- **Test mode:** minutes become seconds, so you can try the whole thing in under a minute.
 
-For example if there is an image subfolder under your extension project workspace:
+## Commands
 
-\!\[feature X\]\(images/feature-x.png\)
+Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+| Command | What it does |
+|---|---|
+| **Smart Breaker: Показать статус** (Show status) | Work time so far, time until the break, or the current reminder level |
+| **Smart Breaker: Сбросить таймер** (Reset timer, test mode only) | Resets the timer. Works only in test mode, so the extension can't be bypassed |
 
-## Requirements
+## Settings
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+`Settings → Extensions → Smart Breaker`:
 
-## Extension Settings
+| Setting | Default | Description |
+|---|---|---|
+| **smartBreaker.workMinutes** | 120 | Minutes of work before the first reminder |
+| **smartBreaker.idleMinutes** | 5 | Minutes without typing after which a break begins |
+| **smartBreaker.breakMinutes** | 30 | How long a break must last to count |
+| **smartBreaker.escalationMinutes** | 5 | Minutes of ignoring before the reminder escalates |
+| **smartBreaker.testMode** | false | Test mode: minutes → seconds, reset command enabled |
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Installation
 
-For example:
+**From a `.vsix` file:**
+1. Open the Extensions view (`Cmd+Shift+X`).
+2. `...` → `Install from VSIX...` → pick `smart-breaker-0.0.1.vsix`.
 
-This extension contributes the following settings:
+**From source:**
+```bash
+git clone https://github.com/donsckoyyy/ISRPO3
+cd ISRPO3
+npm install
+npm run compile
+```
+Then open the folder in VS Code and press `F5`.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+**Packaging into a `.vsix`:**
+```bash
+npm install -g @vscode/vsce
+vsce package
+```
 
-## Known Issues
+## How it works
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+| File | Purpose |
+|---|---|
+| `src/extension.ts` | Entry point: **activate()** starts the timer, subscribes to typing events and registers the commands |
+| `src/breakTimer.ts` | Logic: once a second it updates work time, detects breaks and raises the reminder level |
+| `src/ui.ts` | UI: status bar, notifications, Webview panel |
+| `src/state.ts` | Extension state and saving it to `globalState` |
+| `src/config.ts` | Reading user settings |
+| `src/tips.ts` | List of tips |
 
-## Release Notes
+## Limitations and roadmap
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- With several VS Code windows open, each one tracks time separately.
+- The break panel currently opens full-size right away. Gradual growth is planned.
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Author:** Nechetailiuk Nikita Sergeevich, group M3108  
