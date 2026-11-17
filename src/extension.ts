@@ -1,26 +1,35 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { BreakTimer } from './breakTimer';
+import { Ui } from './ui';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+// вызывается, когда VS Code активирует расширение.
+// в package.json указано "onStartupFinished" - сразу после запуска редактора.
 export function activate(context: vscode.ExtensionContext) {
+	const timer = new BreakTimer(context); // тикает раз в секунду
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "smart-breaker" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('smart-breaker.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from smart-breaker!');
+	const onType = vscode.workspace.onDidChangeTextDocument((event) => { // сообщает редактору если пользователь что то печатает
+		const scheme = event.document.uri.scheme;
+		if (event.contentChanges.length > 0 && (scheme === 'file' || scheme === 'untitled')) {
+			timer.onActivity();
+		}
 	});
 
-	context.subscriptions.push(disposable);
+	// команда отображения статуса , и клик по нему, чтобы узнать информацию
+	const statusCommand = vscode.commands.registerCommand('smartBreaker.status', () => {
+		vscode.window.showInformationMessage('Smart Breaker · ' + Ui.describe(timer.viewInfo()).replace(/\n/g, ' · '));
+	});
+
+	// команда сброса таймера
+	const resetCommand = vscode.commands.registerCommand('smartBreaker.reset', () => {
+		if (timer.reset()) {
+			vscode.window.showInformationMessage('Smart Breaker: таймер сброшен.');
+		} else {
+			vscode.window.showWarningMessage('Smart Breaker: сброс доступен только в тестовом режиме. Иди отдыхать 🙂');
+		}
+	});
+
+	// всё, что положили в subscriptions, VS Code освободит при выключении расширения: таймер, статус-бар, события
+	context.subscriptions.push(timer, onType, statusCommand, resetCommand);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

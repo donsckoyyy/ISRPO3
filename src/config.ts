@@ -9,10 +9,10 @@ export interface Settings {
 	testMode: boolean;    // тестовый режим: «минуты» считаются секундами
 }
 
-// Читаем настройки пользователя (Settings → Extensions → Smart Break).
+// Читаем настройки пользователя (Settings → Extensions → Smart Breaker).
 // Вызываем на каждом тике, поэтому изменения настроек применяются сразу.
 export function readSettings(): Settings {
-	const cfg = vscode.workspace.getConfiguration('smartBreak');
+	const cfg = vscode.workspace.getConfiguration('smartBreaker');
 	const testMode = cfg.get<boolean>('testMode', false);
 	const unit = testMode ? 1000 : 60_000; // 1 секунда или 1 минута
 

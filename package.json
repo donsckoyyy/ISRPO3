@@ -1,23 +1,68 @@
 {
   "name": "smart-breaker",
-  "displayName": "smart-breaker",
-  "description": "111",
+  "displayName": "Smart Breaker",
+  "description": "Напоминает делать перерывы, если ты слишком долго пишешь код",
   "version": "0.0.1",
+  "publisher": "donsckoyyy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/donsckoyyy/ISRPO3"
+  },
   "engines": {
     "vscode": "^1.146.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "smart-breaker.helloWorld",
-        "title": "Hello World"
+        "command": "smartBreaker.status",
+        "title": "Smart Breaker: Показать статус"
+      },
+      {
+        "command": "smartBreaker.reset",
+        "title": "Smart Breaker: Сбросить таймер (тестовый режим)"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Smart Breaker",
+      "properties": {
+        "smartBreaker.workMinutes": {
+          "type": "number",
+          "default": 120,
+          "minimum": 1,
+          "description": "Сколько минут можно работать до первого напоминания."
+        },
+        "smartBreaker.idleMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "Сколько минут без набора текста считается началом перерыва."
+        },
+        "smartBreaker.breakMinutes": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "Сколько минут должен длиться перерыв, чтобы его засчитать."
+        },
+        "smartBreaker.escalationMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "Через сколько минут игнорирования напоминание становится настойчивее."
+        },
+        "smartBreaker.testMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Тестовый режим: все значения в минутах считаются секундами, доступна команда сброса."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
