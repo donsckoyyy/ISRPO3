@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { MAX_LEVEL } from './state';
 
-// Что нужно интерфейсу, чтобы нарисовать текущее состояние
+// все что нужно интерфейсу, чтобы нарисовать текущее состояние
 export interface ViewInfo {
 	level: number;    // уровень эскалации (0 — напоминания нет)
 	resting: boolean; // пользователь сейчас отдыхает (давно не печатал)
@@ -11,7 +11,7 @@ export interface ViewInfo {
 	tip: string;      // текущий совет
 }
 
-// 3725000 мс = "1:02:05", 125000 мс = "2:05"
+// конвертация мс во время: 3725000 мс = "1:02:05", 125000 мс = "2:05"
 export function formatDuration(ms: number): string {
 	const total = Math.max(0, Math.ceil(ms / 1000));
 	const h = Math.floor(total / 3600);
@@ -21,18 +21,18 @@ export function formatDuration(ms: number): string {
 	return h > 0 ? `${h}:${two(m)}:${two(s)}` : `${m}:${two(s)}`;
 }
 
-// Всё, что пользователь видит: статус-бар, уведомления, панель Webview
+// все, что пользователь видит: статус-бар, уведомления, панель Webview
 export class Ui implements vscode.Disposable {
 	private statusBar: vscode.StatusBarItem;
 
-	// Самозакрывающееся уведомление (уровень 1).
-	// Это «уведомление с прогрессом»: оно висит, пока не выполнится Promise.
+	// самозакрывающееся уведомление (уровень 1).
+	// это «уведомление с прогрессом»: оно висит, пока не выполнится Promise.
 	// closeProgress — функция resolve этого Promise: вызвали её — уведомление исчезло.
 	private closeProgress?: () => void;
 	private reportProgress?: (message: string) => void;
 	private lastProgressMessage = '';
 
-	// Панель Webview (уровень 4)
+	// панель Webview (уровень 4)
 	private panel?: vscode.WebviewPanel;
 	private wantPanel = false; // должна ли панель сейчас быть открыта
 	private lastPanelHtml = '';
@@ -57,13 +57,13 @@ export class Ui implements vscode.Disposable {
 		}
 	}
 
-	// Убрать все напоминания (перерыв засчитан)
+	// убрать все напоминания (перерыв засчитан)
 	hideAll(): void {
 		this.closeProgressNotification();
 		this.closePanel();
 	}
 
-	// Вызывается на каждом тике: обновляем всё, что показывает время
+	// вызывается на каждом тике: обновляем всё, что показывает время
 	update(info: ViewInfo): void {
 		this.updateStatusBar(info);
 
@@ -79,7 +79,7 @@ export class Ui implements vscode.Disposable {
 		}
 	}
 
-	// Текст для команды «Показать статус» и подсказки статус-бара
+	// текст для команды «Показать статус» и подсказки статус-бара
 	static describe(info: ViewInfo): string {
 		const lines = [
 			`Наработано: ${formatDuration(info.workMs)}`,
@@ -102,7 +102,7 @@ export class Ui implements vscode.Disposable {
 			this.statusBar.text = `$(clock) ${formatDuration(info.workLeftMs)} до перерыва`;
 		}
 
-		// Цвет статус-бара зависит от уровня эскалации
+		// цвет статус-бара зависит от уровня эскалации
 		if (info.level >= 3) {
 			this.statusBar.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
 		} else if (info.level === 2) {
@@ -114,7 +114,7 @@ export class Ui implements vscode.Disposable {
 		this.statusBar.tooltip = `Smart Breaker\n${Ui.describe(info)}`;
 	}
 
-	// --- Уровень 1: уведомление, которое закрывается само ---
+	// --- уровень 1: уведомление, которое закрывается само ---
 
 	private showProgress(message: string): void {
 		if (this.reportProgress) {
@@ -144,7 +144,7 @@ export class Ui implements vscode.Disposable {
 		this.lastProgressMessage = '';
 	}
 
-	// --- Уровень 4: панель на весь редактор ---
+	// --- уровень 4: панель на весь редактор ---
 
 	private openPanel(): void {
 		this.wantPanel = true;
@@ -162,17 +162,17 @@ export class Ui implements vscode.Disposable {
 		);
 		this.lastPanelHtml = '';
 
-		// Убираем боковую и нижнюю панели, чтобы перерыв занял как можно больше места.
-		// Если какой-то команды нет в этой версии VS Code — просто игнорируем ошибку.
+		// убираем боковую и нижнюю панели, чтобы перерыв занял как можно больше места.
+		// если какой-то команды нет в этой версии VS Code — просто игнорируем ошибку.
 		const ignore = () => undefined;
 		vscode.commands.executeCommand('workbench.action.closeSidebar').then(undefined, ignore);
 		vscode.commands.executeCommand('workbench.action.closePanel').then(undefined, ignore);
 
-		// Панель закрыли (крестиком или сами)
+		// панель закрыли (крестиком или сами)
 		this.panel.onDidDispose(() => {
 			this.panel = undefined;
 			if (this.wantPanel) {
-				// Перерыв ещё не засчитан → через секунду открываем панель снова
+				// перерыв ещё не засчитан → через секунду открываем панель снова
 				setTimeout(() => {
 					if (this.wantPanel) {
 						this.openPanel();
@@ -187,7 +187,7 @@ export class Ui implements vscode.Disposable {
 			return;
 		}
 
-		// Пользователь переключился на другую вкладку → возвращаем панель на передний план
+		// пользователь переключился на другую вкладку → возвращаем панель на передний план
 		if (!this.panel.visible) {
 			this.panel.reveal(vscode.ViewColumn.Active);
 		}
@@ -197,7 +197,7 @@ export class Ui implements vscode.Disposable {
 			: `Отойди от компьютера. Панель исчезнет сама, когда ты отдохнёшь.`;
 		const html = panelHtml(info.tip, status);
 
-		// Перерисовываем, только если текст поменялся — иначе страница будет мигать
+		// перерисовываем, только если текст поменялся — иначе страница будет мигать
 		if (html !== this.lastPanelHtml) {
 			this.panel.webview.html = html;
 			this.lastPanelHtml = html;
@@ -216,7 +216,7 @@ export class Ui implements vscode.Disposable {
 	}
 }
 
-// HTML-страница панели. Цвета берём из темы VS Code через CSS-переменные.
+// HTML-страница панели, цвета берём из темы VS Code через CSS-переменные.
 function panelHtml(tip: string, status: string): string {
 	return `<!DOCTYPE html>
 <html lang="ru">
