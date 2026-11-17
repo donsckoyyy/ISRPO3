@@ -1,78 +1,78 @@
 # Smart Breaker
-**Lab work #3** for the course *Software Development Tools* (ITMO University). This repository contains Smart Breaker, a VS Code extension written in TypeScript.
+**Лабораторная работа №3** по дисциплине «Инструментальные средства разработки ПО». В нем находится написанный на TypeScript плагин Smart Breaker.
 
-Smart Breaker keeps track of how long you have been coding non-stop and makes you take breaks. Ignore the reminder, and it gets more and more persistent until it takes over the whole editor.
+Smart Breaker - расширение для VS Code, которое следит за тем, сколько ты непрерывно пишешь код, и заставляет делать перерывы. Если напоминание игнорировать, оно становится всё настойчивее, пока не заполонит весь редактор.
 
-## Features
+## Возможности
 
-- **Activity-based work tracking.** Only the time you spend typing in the editor counts as work. If the window is minimized or you are just reading, the timer does not run.
-- **Automatic break detection.** Stop typing for 5 minutes and a break begins. If it lasts 30 minutes, the break counts and your work time is reset.
-- **Reminder with a random tip:** stretch your neck, drink some water, do eye exercises, etc.
-- **Escalation.** Every 5 minutes of ignoring it, the reminder gets more intrusive: a notification in the corner, a warning and a yellow status bar, an error message and a red status bar, a full-editor "Time for a break" panel. Close it with the ✕ and it comes right back.
-- **Reminders disappear on their own** once the break counts. There is no "Snooze" button: the only way to get rid of the reminder is to actually rest.
-- **No early-return cheating.** Come back to the code before 30 minutes are up and the break does not count: the reminder drops back to level 1 and the rest countdown starts over.
-- **Survives restarts.** Accumulated work time and the reminder level are saved, so restarting VS Code will not reset the timer. If the editor was closed for longer than a break, the break counts.
-- **Status bar:** time left until the break, rest time remaining, and a color that matches the reminder level. Hover for stats, click to show them in a notification.
-- **Test mode:** minutes become seconds, so you can try the whole thing in under a minute.
+- **Учёт рабочего времени по активности.** Работой считается время, пока ты набираешь текст в редакторе. Если окно свёрнуто или ты просто читаешь, время не копится.
+- **Автоматическое распознавание перерыва.** Если не печатать 5 минут, начинается перерыв. Если он продлится 30 минут, он засчитывается и рабочее время обнуляется.
+- **Напоминание со случайным советом:** размять шею, выпить воды, сделать гимнастику для глаз и т. д.
+- **Эскалация.** Каждые 5 минут игнорирования напоминание становится навязчивее: уведомление в углу, предупреждение и жёлтый статус-бар, сообщение об ошибке и красный статус-бар, панель «Пора сделать перерыв» на весь редактор. Если закрыть её крестиком, она откроется снова.
+- **Напоминания исчезают сами**, когда перерыв засчитан. Кнопок «Отложить» нет: единственный способ убрать напоминание - отдохнуть.
+- **Защита от «досрочного возвращения».** Если вернуться к коду раньше, чем через 30 минут, перерыв не засчитывается, напоминание возвращается на первый уровень, а отсчёт отдыха начинается заново.
+- **Память между перезапусками.** Накопленное время и уровень напоминания сохраняются, поэтому перезапуск VS Code не сбрасывает таймер. Если редактор был закрыт дольше перерыва, перерыв засчитывается.
+- **Статус-бар:** время до перерыва, оставшееся время отдыха, цвет по уровню напоминания. При наведении показывается статистика, клик выводит её в уведомлении.
+- **Тестовый режим:** минуты считаются за секунды, чтобы быстро проверить плагин.
 
-## Commands
+## Команды
 
-Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
+Открываются через список команд (`Cmd+Shift+P` / `Ctrl+Shift+P`):
 
-| Command | What it does |
+| Команда | Что делает |
 |---|---|
-| **Smart Breaker: Показать статус** (Show status) | Work time so far, time until the break, or the current reminder level |
-| **Smart Breaker: Сбросить таймер** (Reset timer, test mode only) | Resets the timer. Works only in test mode, so the extension can't be bypassed |
+| **Smart Breaker: Показать статус** | Наработанное время, время до перерыва или уровень напоминания |
+| **Smart Breaker: Сбросить таймер** (тестовый режим) | Обнуляет таймер. Работает только в тестовом режиме, чтобы плагин нельзя было обойти |
 
-## Settings
+## Настройки
 
 `Settings → Extensions → Smart Breaker`:
 
-| Setting | Default | Description |
+| Настройка | По умолчанию | Описание |
 |---|---|---|
-| **smartBreaker.workMinutes** | 120 | Minutes of work before the first reminder |
-| **smartBreaker.idleMinutes** | 5 | Minutes without typing after which a break begins |
-| **smartBreaker.breakMinutes** | 30 | How long a break must last to count |
-| **smartBreaker.escalationMinutes** | 5 | Minutes of ignoring before the reminder escalates |
-| **smartBreaker.testMode** | false | Test mode: minutes → seconds, reset command enabled |
+| **smartBreaker.workMinutes** | 120 | Сколько минут можно работать до первого напоминания |
+| **smartBreaker.idleMinutes** | 5 | Сколько минут без набора текста считается началом перерыва |
+| **smartBreaker.breakMinutes** | 30 | Сколько минут должен длиться перерыв, чтобы его засчитать |
+| **smartBreaker.escalationMinutes** | 5 | Через сколько минут игнорирования напоминание становится настойчивее |
+| **smartBreaker.testMode** | false | Тестовый режим: минуты → секунды, доступен сброс |
 
-## Installation
+## Установка
 
-**From a `.vsix` file:**
-1. Open the Extensions view (`Cmd+Shift+X`).
-2. `...` → `Install from VSIX...` → pick `smart-breaker-0.0.1.vsix`.
+**Из файла `.vsix`:**
+1. Открыть панель Extensions (`Cmd+Shift+X`).
+2. `...` → `Install from VSIX...` → выбрать файл `smart-breaker-0.0.1.vsix`.
 
-**From source:**
+**Из исходников:**
 ```bash
 git clone https://github.com/donsckoyyy/ISRPO3
 cd ISRPO3
 npm install
 npm run compile
 ```
-Then open the folder in VS Code and press `F5`.
+Затем открыть папку в VS Code и нажать `F5`.
 
-**Packaging into a `.vsix`:**
+**Упаковка в `.vsix`:**
 ```bash
 npm install -g @vscode/vsce
 vsce package
 ```
 
-## How it works
+## Как это устроено
 
-| File | Purpose |
+| Файл | Назначение |
 |---|---|
-| `src/extension.ts` | Entry point: **activate()** starts the timer, subscribes to typing events and registers the commands |
-| `src/breakTimer.ts` | Logic: once a second it updates work time, detects breaks and raises the reminder level |
-| `src/ui.ts` | UI: status bar, notifications, Webview panel |
-| `src/state.ts` | Extension state and saving it to `globalState` |
-| `src/config.ts` | Reading user settings |
-| `src/tips.ts` | List of tips |
+| `src/extension.ts` | Точка входа: **activate()** регистрирует команды и подписку на набор текста |
+| `src/breakTimer.ts` | Логика: раз в секунду считает рабочее время, распознаёт перерывы, повышает уровень напоминания |
+| `src/ui.ts` | Интерфейс: статус-бар, уведомления, панель Webview |
+| `src/state.ts` | Состояние плагина и его сохранение в `globalState` |
+| `src/config.ts` | Чтение настроек пользователя |
+| `src/tips.ts` | Список советов |
 
-## Limitations and roadmap
+## Ограничения и планы развития
 
-- With several VS Code windows open, each one tracks time separately.
-- The break panel currently opens full-size right away. Gradual growth is planned.
+- Если открыто несколько окон VS Code, каждое считает время отдельно.
+- Панель перерыва пока сразу открывается на весь редактор. В планах — постепенное увеличение.
 
 ---
 
-**Author:** Nechetailiuk Nikita Sergeevich, group M3108  
+**Автор:** Нечетайлюк Никита Сергеевич, группа M3108  
